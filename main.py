@@ -57,8 +57,9 @@ def recruiter_login(db:db_dependency,recruiter:RecruiterBase):
         if rec_ins:
             if rec_ins.password == recruiter.password:
                 rec_ins.logged = True
-                db.refresh(rec_ins)
                 db.commit()
+                db.refresh(rec_ins)
+                
 
                 return {
                         "status_code":200,
@@ -86,8 +87,9 @@ def recruiter_login(db:db_dependency,recruiter:RecruiterBase):
         if rec_ins:
             if rec_ins.password == recruiter.password:
                 rec_ins.logged = False
-                db.refresh(rec_ins)
                 db.commit()
+                db.refresh(rec_ins)
+                
 
                 return {
                         "status_code":200,
@@ -131,8 +133,9 @@ def recruiter_login(db:db_dependency,candidate:CandidateBase):
         if rec_ins:
             if rec_ins.password == candidate.password:
                 rec_ins.logged = True
-                db.refresh(rec_ins)
                 db.commit()
+                db.refresh(rec_ins)
+                
 
                 return {
                         "status_code":200,
@@ -312,12 +315,7 @@ def send_email(candidate_email,recruiter_email):
     try:
         #Smtp code for gmail to send message
         # smtp_server = smtplib.SMTP('smtp.gmail.com', 587)
-        # smtp_server.ehlo()
-        # smtp_server.starttls()
-        # smtp_server.ehlo()
-        # smtp_server.login('sender_email', 'password')
-        # smtp_server.sendmail('sender_email', 'receiver_email', 'Message')
-        # smtp_server.quit()
+    
         return True
 
     except Exception as e:
