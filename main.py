@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, HTTPException,Query
+from fastapi import FastAPI, Depends, HTTPException,Query,BackgroundTasks
 from sqlalchemy.orm import Session
 from typing import Annotated
 import models
@@ -215,7 +215,7 @@ def recruiter_login(db:db_dependency,job:JobBase):
     
 
 @app.post("/apply_job")
-def apply_jobs(db:db_dependency,user_id:int = Query(...),job_id:int = Query(...)):
+def apply_jobs(db:db_dependency,background_task:BackgroundTasks,user_id:int = Query(...),job_id:int = Query(...)):
 
     try:
         candidate_ins = db.query(models.Candidate).filter(models.Candidate.id==user_id).first()
@@ -224,11 +224,10 @@ def apply_jobs(db:db_dependency,user_id:int = Query(...),job_id:int = Query(...)
                 job = db.query(models.Application).filter(models.Application.job_id==job_id,
                                                           models.Application.applied_by==user_id).first()
                 
-                job_ins = db.query(models.Job).filter(models.Job.id==job_id).first()
+                if job:                
+                    job_ins = db.query(models.Job).filter(models.Job.id==job_id).first()                                
+                    background_task.add_task(send_email,candidate_ins.email_address,job_ins.posted_by.email_address)               
                 
-                send_email(candidate_ins.email_address,job_ins.posted_by.email_address)
-                
-                if job:
                     return {
                         "status_code":200,
                         "message":"Already applied for the Job"
