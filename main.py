@@ -221,6 +221,10 @@ def apply_jobs(db:db_dependency,user_id:int = Query(...),job_id:int = Query(...)
                 job = db.query(models.Application).filter(models.Application.job_id==job_id,
                                                           models.Application.applied_by==user_id).first()
                 
+                job_ins = db.query(models.Job).filter(models.Job.id==job_id).first()
+                
+                send_email(candidate_ins.email_address,job_ins.posted_by.email_address)
+                
                 if job:
                     return {
                         "status_code":200,
@@ -302,6 +306,26 @@ def get_jobs(db:db_dependency,user_id:int = Query(...)):
     except Exception as e :
         print(f"Login Issue :{e}")
         return HTTPException(status_code=400,detail="Something went wrong")
+    
+
+def send_email(candidate_email,recruiter_email):
+    try:
+        #Smtp code for gmail to send message
+        # smtp_server = smtplib.SMTP('smtp.gmail.com', 587)
+        # smtp_server.ehlo()
+        # smtp_server.starttls()
+        # smtp_server.ehlo()
+        # smtp_server.login('sender_email', 'password')
+        # smtp_server.sendmail('sender_email', 'receiver_email', 'Message')
+        # smtp_server.quit()
+        return True
+
+    except Exception as e:
+        print(e)
+        return HTTPException(
+            status_code=400,
+            detail="Something went wrong"
+        )
     
 
 
